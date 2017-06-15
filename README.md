@@ -4,7 +4,7 @@
 ## Installation
 
 1. Download or clone this repo.
-2. In the containing folder of the containing directory, open a terminal and enter:
+2. In the containing folder of the containing directory, open an elevated terminal and enter:
 ```
 pip install git+https://github.com/tfff1OFFICIAL/pywinterm.git@master
 ```
