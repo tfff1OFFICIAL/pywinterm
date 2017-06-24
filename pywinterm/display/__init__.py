@@ -1,8 +1,57 @@
 """
 Screen utilities
 """
-from pywinterm.display import util
+from pywinterm.display import util, colours
 import os
+
+
+class Label:
+    def __init__(self, text, fore_colour=colours.WHITE, back_colour=None):
+        self.text = text
+        self.fore_colour = fore_colour
+        self.back_colour = back_colour
+        self.index = 0
+
+    def _generate_colour_start_sequence(self):
+        if self.fore_colour and self.back_colour:
+            return colours.ESCAPE_SEQUENCE + self.fore_colour + ";" + self.back_colour
+        elif self.fore_colour:
+            return colours.ESCAPE_SEQUENCE + self.fore_colour
+        elif self.back_colour:
+            return colours.ESCAPE_SEQUENCE + self.back_colour
+        else:
+            return colours.END
+
+    def __str__(self):
+        return self.text
+
+    def __len__(self):
+        return len(self.text)
+
+    def __getitem__(self, item):
+        if item == 0:
+            return self._generate_colour_start_sequence() + self.text[0]
+        elif item == len(self.text) - 1:
+            return self.text[item] + colours.END
+        else:
+            return self.text[item]
+
+    def __iter__(self):
+        self.index = 0
+        return self
+
+    def __next__(self):
+        if self.index >= len(self.text):
+            raise StopIteration
+        elif self.index == 0:
+            result = self._generate_colour_start_sequence() + self.text[0]
+        elif self.index == len(self.text) - 1:
+            result = self.text[self.index] + colours.END
+        else:
+            result = self.text[self.index]
+
+        self.index += 1
+        return result
 
 
 class Display:
@@ -126,16 +175,40 @@ if __name__ == "__main__":
         width=11,
         height=2
     )
-    #menu.centre_on_parent()
+    menu.centre_on_parent()
 
     # link displays
     root.add_display(menu)
 
     # print things to the displays
     menu.printline("hi there!")
-    menu.printline("how are you?")
+    l = Label("how are you?", fore_colour=colours.RED)
+    for x in l:
+        print(x)
+    menu.printline(l)
 
-    root.printline("aweroignarilgunairltuhmargl")
-    root.printline("aisuhtnalkrwtxmal,rugmixuas")
+    #root.printline("aweroignarilgunairltuhmargl")
+    #root.printline("aisuhtnalkrwtxmal,rugmixuas")
 
-    root.render()
+    x = 0
+
+    cols = (
+        colours.BOLD,
+        colours.WHITE,
+        colours.RED,
+        colours.BLUE,
+        colours.CYAN,
+        colours.INVERSE
+    )
+
+    while True:
+        if x < 5:
+            x += 1
+        else:
+            x = 0
+
+        l.fore_colour = cols[x]
+
+        root.render()
+
+        time.sleep(0.5)
