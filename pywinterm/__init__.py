@@ -3,6 +3,10 @@ System functions
 """
 import os
 import sys
+import platform
+
+if platform.system() != 'Windows':  # this module supports windows only for the time being
+    raise OSError("This operating is not currently supported. Please only use this library on Windows machines.")
 
 
 def pause():
