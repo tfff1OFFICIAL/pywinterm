@@ -97,7 +97,7 @@ def flatten_root(root):
 
         for l in range(len(display.text)):  # render the text
             for i in range(len(display.text[l])):
-                print("screen[{}][{}] = {}".format(l + y_total, i + x_total, display.text[l][i]))
+                #print("screen[{}][{}] = {}".format(l + y_total, i + x_total, display.text[l][i]))
                 screen[l + y_total][i + x_total] = display.text[l][i]
 
         for disp in display.children:  # repeat for all of the children, and the children's children etc.
