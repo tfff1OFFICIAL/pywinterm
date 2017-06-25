@@ -63,7 +63,7 @@ def get_pressed():
                 key_2 = ord(msvcrt.getch())
                 pressed_key = Key(key_2, True)
             else:
-                pressed_keys = Key(key)
+                pressed_key = Key(key)
 
 
 def key_down(key):
@@ -98,8 +98,29 @@ def wait_for_keypress(sleep_time=0.01):
 if __name__ == "__main__":
     import time
 
+    X = None
+
+    while X != "H":
+        get_pressed()
+        if pressed_key:
+            print(pressed_key.__repr__())
+
+        X = pressed_key
+
+        clear_keypresses()
+        time.sleep(0.01)
+
     while True:
-        k = get_pressed()
-        if k:
-            print(k.__repr__())
+        get_pressed()
+
+        if key_down("a"):
+            print("a")
+
+        if key_down("b"):
+            print("b")
+
+        if key_down("c"):
+            print("c")
+
+        clear_keypresses()
         time.sleep(0.01)
