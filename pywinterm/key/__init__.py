@@ -36,8 +36,8 @@ def kbfunc():
     From: https://stackoverflow.com/questions/5044073/python-cross-platform-listening-for-keypresses
     :return: String or None
     """
-    print("WARNING: lu.sys.keyboard.kbfunc() is deprecated, used lu.sys.keyboard.pressed() instead")
-    #this is boolean for whether the keyboard has bene hit
+    print("WARNING: lu.sys.key.kbfunc() is deprecated, used lu.sys.key.pressed() instead")
+    #this is boolean for whether the key has bene hit
     x = msvcrt.kbhit()
     if x:
         #getch acquires the character encoded in binary ASCII
@@ -47,22 +47,23 @@ def kbfunc():
     return ret
 
 
-pressed_keys = []  # a list of pressed keys for this frame, so that different keys can be checked in the same frame
+pressed_key = None  # a list of pressed keys for this frame, so that different keys can be checked in the same frame
 
 
-def listen_pressed():
+def get_pressed():
     """
     Gets the currently pressed key
     :return: None
     """
-    global pressed_keys
-    if msvcrt.kbhit():  # if the keyboard has been hit
-        key = ord(msvcrt.getch())
-        if key == 224 or key == 0:  # 224 always comes before a special key, 0 appears to come before an F key
-            key_2 = ord(msvcrt.getch())
-            pressed_keys.append(Key(key_2, True))
-        else:
-            pressed_keys.append(Key(key))
+    global pressed_key
+    if pressed_key is None:  # if there is no key already being handled
+        if msvcrt.kbhit():  # if the key has been hit
+            key = ord(msvcrt.getch())
+            if key == 224 or key == 0:  # 224 always comes before a special key, 0 appears to come before an F key
+                key_2 = ord(msvcrt.getch())
+                pressed_key = Key(key_2, True)
+            else:
+                pressed_keys = Key(key)
 
 
 def key_down(key):
@@ -71,9 +72,9 @@ def key_down(key):
     :param key: String, Int, Key - the requested key in either form.
     :return: Bool
     """
-    listen_pressed()
-    global pressed_keys
-    return key in pressed_keys
+    get_pressed()
+    global pressed_key
+    return key == pressed_key
 
 
 def clear_keypresses():
@@ -81,8 +82,8 @@ def clear_keypresses():
     To be called at the end of every frame
     :return: None
     """
-    global pressed_keys
-    pressed_keys = []
+    global pressed_key
+    pressed_key = None
 
 
 def wait_for_keypress(sleep_time=0.01):
@@ -98,7 +99,7 @@ if __name__ == "__main__":
     import time
 
     while True:
-        k = listen_pressed()
+        k = get_pressed()
         if k:
             print(k.__repr__())
         time.sleep(0.01)

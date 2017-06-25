@@ -1,7 +1,7 @@
 """
 Constants for the characters returned by special keys.
 """
-from pywinterm.keyboard import Key
+from pywinterm.key import Key
 
 sKey = lambda x: Key(x, True)  # shorthand for a special key
 
