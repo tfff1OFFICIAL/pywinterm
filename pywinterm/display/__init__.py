@@ -1,12 +1,13 @@
 """
 Screen utilities
 """
-from pywinterm.display import util, colours
+from pywinterm.display import util, style, style
+from pywinterm.display.style import foreground, background
 import os
 
 
 class Label:
-    def __init__(self, text, fore_colour=colours.WHITE, back_colour=None):
+    def __init__(self, text, fore_colour=None, back_colour=None):
         self.text = text
         self.fore_colour = fore_colour
         self.back_colour = back_colour
@@ -14,13 +15,13 @@ class Label:
 
     def _generate_colour_start_sequence(self):
         if self.fore_colour and self.back_colour:
-            return colours.ESCAPE_SEQUENCE + self.fore_colour + ";" + self.back_colour
+            return style.ESCAPE_SEQUENCE + self.fore_colour + ";" + self.back_colour
         elif self.fore_colour:
-            return colours.ESCAPE_SEQUENCE + self.fore_colour
+            return style.ESCAPE_SEQUENCE + self.fore_colour
         elif self.back_colour:
-            return colours.ESCAPE_SEQUENCE + self.back_colour
+            return style.ESCAPE_SEQUENCE + self.back_colour
         else:
-            return colours.END
+            return style.END
 
     def __str__(self):
         return self.text
@@ -32,7 +33,7 @@ class Label:
         if item == 0:
             return self._generate_colour_start_sequence() + self.text[0]
         elif item == len(self.text) - 1:
-            return self.text[item] + colours.END
+            return self.text[item] + style.END
         else:
             return self.text[item]
 
@@ -46,7 +47,7 @@ class Label:
         elif self.index == 0:
             result = self._generate_colour_start_sequence() + self.text[0]
         elif self.index == len(self.text) - 1:
-            result = self.text[self.index] + colours.END
+            result = self.text[self.index] + style.END
         else:
             result = self.text[self.index]
 
@@ -182,7 +183,7 @@ if __name__ == "__main__":
 
     # print things to the displays
     menu.printline("hi there!")
-    l = Label("how are you?", fore_colour=colours.RED)
+    l = Label("how are you?", fore_colour=style.foreground.RED)
     for x in l:
         print(x)
     menu.printline(l)
@@ -193,12 +194,12 @@ if __name__ == "__main__":
     x = 0
 
     cols = (
-        colours.BOLD,
-        colours.WHITE,
-        colours.RED,
-        colours.BLUE,
-        colours.CYAN,
-        colours.INVERSE
+        style.foreground.WHITE,
+        style.foreground.RED,
+        style.foreground.BLUE,
+        style.foreground.CYAN,
+        style.background.GREEN,
+        style.background.MAGENTA
     )
 
     while True:

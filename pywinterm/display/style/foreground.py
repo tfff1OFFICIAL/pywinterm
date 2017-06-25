@@ -1,18 +1,3 @@
-"""
-STATIC: Default Colours
-"""
-
-# Special
-ESCAPE_SEQUENCE = "\033["
-
-END = "\033[0m"  # end the colour
-
-# Styles
-RESET = "0m"
-BOLD = "1m"
-UNDERLINE = "4m"
-INVERSE = "7m"
-
 # Normal Foreground
 BLACK = "30m"
 RED = "31m"
