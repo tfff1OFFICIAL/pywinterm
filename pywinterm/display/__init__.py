@@ -15,7 +15,7 @@ class Label:
 
     def _generate_colour_start_sequence(self):
         if self.fore_colour and self.back_colour:
-            return style.ESCAPE_SEQUENCE + self.fore_colour + ";" + self.back_colour
+            return style.ESCAPE_SEQUENCE + self.fore_colour[:-1] + ";" + self.back_colour
         elif self.fore_colour:
             return style.ESCAPE_SEQUENCE + self.fore_colour
         elif self.back_colour:
