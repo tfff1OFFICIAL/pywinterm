@@ -166,7 +166,7 @@ class RootDisplay(Display):
         Merges displays and then renders them
         :return: list<list<char>>, a matrix representing the screen, rows first, then columns
         """
-        screen = [[" " for i in range(root.width)] for x in range(root.height)]  # pre-generate the screen matrix
+        screen = [[" " for i in range(self.width)] for x in range(self.height)]  # pre-generate the screen matrix
 
         def flatten_display(display, x=0, y=0):
             """
