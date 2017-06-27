@@ -5,6 +5,7 @@ from pywinterm.display import util, style, style
 from pywinterm.display.exceptions import *
 from pywinterm.display.style import foreground, background
 import os
+import platform
 
 
 class Label:
@@ -17,17 +18,28 @@ class Label:
         self.text_alignment = text_alignment
 
     def _generate_colour_start_sequence(self):
-        if self.fore_colour and self.back_colour:
-            return style.ESCAPE_SEQUENCE + self.fore_colour[:-1] + ";" + self.back_colour
-        elif self.fore_colour:
-            return style.ESCAPE_SEQUENCE + self.fore_colour
-        elif self.back_colour:
-            return style.ESCAPE_SEQUENCE + self.back_colour
+        if platform.uname().release == "10":  # colours only work on Windows 10
+            if self.fore_colour and self.back_colour:
+                return style.ESCAPE_SEQUENCE + self.fore_colour[:-1] + ";" + self.back_colour
+            elif self.fore_colour:
+                return style.ESCAPE_SEQUENCE + self.fore_colour
+            elif self.back_colour:
+                return style.ESCAPE_SEQUENCE + self.back_colour
+            else:
+                return style.END
         else:
-            return style.END
+            return ''
 
     def __str__(self):
         return self.text
+
+    def __repr__(self):
+        return '<Label text: %r, fore: %r, back: %r, alignment: %r>' % (
+            self.text,
+            self.fore_colour,
+            self.back_colour,
+            self.text_alignment
+        )
 
     def __len__(self):
         return len(self.text)
