@@ -4,7 +4,6 @@ Screen utilities
 from pywinterm.display import util, style, style
 from pywinterm.display.exceptions import *
 from pywinterm.display.style import foreground, background
-import os
 import platform
 
 
@@ -48,7 +47,10 @@ class Label:
         if item == 0:
             return self._generate_colour_start_sequence() + self.text[0]
         elif item == len(self.text) - 1:
-            return self.text[item] + style.END
+            if platform.uname().release == "10":  # colours only work on Windows 10
+                return self.text[item] + style.END
+            else:
+                return self.text[item]
         else:
             return self.text[item]
 
@@ -62,7 +64,10 @@ class Label:
         elif self.index == 0:
             result = self._generate_colour_start_sequence() + self.text[0]
         elif self.index == len(self.text) - 1:
-            result = self.text[self.index] + style.END
+            if platform.uname().release == "10":  # colours only work on Windows 10
+                result = self.text[self.index] + style.END
+            else:
+                result = self.text[self.index]
         else:
             result = self.text[self.index]
 
@@ -161,7 +166,10 @@ class RootDisplay(Display):
         self.y = 0
 
         util.set_window_title(self.title)
-        util.resize_window(self.width, self.height + 1)  # +1 because we need to leave room for the cursor in the terminal
+        if platform.uname().version == "10":
+            util.resize_window(self.width, self.height + 1)  # +1 because we need to leave room for the cursor in the terminal
+        else:
+            util.resize_window(self.width+5, self.height + 5)  # in order to make the default font fit correctly, based on some testing
         util.clear_window()
 
     def update_title(self, title):
@@ -247,8 +255,8 @@ if __name__ == "__main__":
     # print things to the displays
     menu.printline("hi there!")
     l = Label("how are you?", fore_colour=style.foreground.RED)
-    for x in l:
-        print(x)
+    #for x in l:
+    #    print(x)
     menu.printline(l)
 
     root.printline(Label("Left", text_alignment=0))
