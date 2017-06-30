@@ -112,26 +112,16 @@ class Display:
 
         self.children.append(disp)
 
-    def _printline(self, text):
-        """
-        Prints a new line of text, and tests it for viability
-        :param text: iterable
-        :return: None
-        """
 
-
-    def printline(self, text, *args):
+    def print(self, *args):
         """
         Prints text inside this Display
-        :param text: iterable
         :return: None
         """
-        self.text.append(text)
-
         if args is not None:
             self.text.extend(args)
 
-    def clear_all(self):
+    def clear(self):
         """
         Clears the text and the children
         :return: None
