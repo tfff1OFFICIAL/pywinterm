@@ -106,40 +106,38 @@ class Display:
         """
         # Issue checking:
         if disp.width > self.width:
-            raise DisplaySizeException("Display is too wide to fit here")
+            raise DisplaySizeError("Display is too wide to fit here")
         if disp.height > self.height:
-            raise DisplaySizeException("Display is too tall to fit here")
+            raise DisplaySizeError("Display is too tall to fit here")
 
         self.children.append(disp)
 
-    def printline(self, text):
+    def _printline(self, text):
+        """
+        Prints a new line of text, and tests it for viability
+        :param text: iterable
+        :return: None
+        """
+
+
+    def printline(self, text, *args):
         """
         Prints text inside this Display
-        :param text: String
+        :param text: iterable
         :return: None
         """
         self.text.append(text)
 
-    def printlines(self, texts=None, *args):
-        """
-        Prints multiple rows of text inside this Display
-
-        Fails silently if nothing is specified to print
-        :param texts: iter<string>
-        :return: None
-        """
-        if texts is not None:
-            self.text.extend(texts)
-
         if args is not None:
             self.text.extend(args)
 
-    def clear(self):
+    def clear_all(self):
         """
-        Clears the text
+        Clears the text and the children
         :return: None
         """
-        self.text = []
+        self.text.clear()
+        self.children.clear()
 
     def centre_on_parent(self):
         """
@@ -166,10 +164,7 @@ class RootDisplay(Display):
         self.y = 0
 
         util.set_window_title(self.title)
-        if platform.uname().version == "10":
-            util.resize_window(self.width, self.height + 1)  # +1 because we need to leave room for the cursor in the terminal
-        else:
-            util.resize_window(self.width+5, self.height + 5)  # in order to make the default font fit correctly, based on some testing
+        self.resize_window(self.width, self.height)
         util.clear_window()
 
     def update_title(self, title):
@@ -180,6 +175,18 @@ class RootDisplay(Display):
         """
         self.title = title
         util.set_window_title(self.title)
+
+    def resize_window(self, x, y):
+        """
+        Resizes the window
+        :param x: int
+        :param y: int
+        :return: None
+        """
+        if platform.uname().version == "10":
+            util.resize_window(self.width, self.height + 1)  # +1 because we need to leave room for the cursor in the terminal
+        else:
+            util.resize_window(self.width+5, self.height + 5)  # in order to make the default font fit correctly, based on some testing
 
     def flatten(self):
         """
@@ -214,7 +221,10 @@ class RootDisplay(Display):
 
                 for i in range(len(display.text[l])):
                     # print("screen[{}][{}] = {}".format(l + y_total, i + x_total + indent, display.text[l][i]))
-                    screen[l + y_total][i + x_total + indent] = display.text[l][i]
+                    try:
+                        screen[l + y_total][i + x_total + indent] = display.text[l][i]
+                    except IndexError:
+                        raise DisplayError("Either the Label is too long, or the Display is too large.")
 
             for disp in display.children:  # repeat for all of the children, and the children's children etc.
                 flatten_display(disp, x_total, y_total)

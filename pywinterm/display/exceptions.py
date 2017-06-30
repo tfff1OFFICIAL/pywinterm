@@ -1,16 +1,16 @@
-class DisplayException(Exception):
+class DisplayError(Exception):
     """
     A general error with displays
     """
 
 
-class DisplaySizeException(DisplayException):
+class DisplaySizeError(DisplayError):
     """
     For when there is a problem with a display's size
     """
 
 
-class LabelTooLongException(DisplayException):
+class LabelTooLongError(DisplayError):
     """
     For when a label is too long to fit in it's designated display
     """
