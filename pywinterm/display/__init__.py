@@ -112,7 +112,6 @@ class Display:
 
         self.children.append(disp)
 
-
     def print(self, *args):
         """
         Prints text inside this Display
