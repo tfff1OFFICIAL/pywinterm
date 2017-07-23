@@ -3,6 +3,8 @@ Keyboard related stuff
 """
 import msvcrt
 import time
+import threading
+import types
 
 
 class Key:
@@ -47,23 +49,33 @@ def kbfunc():
     return ret
 
 
+def pressed():
+    """
+    Gets the currently pressed key and returns it
+    :return: Key
+    """
+    if msvcrt.kbhit():  # if the key has been hit
+        key = ord(msvcrt.getch())
+        if key == 224 or key == 0:  # 224 always comes before a special key, 0 appears to come before an F key
+            key_2 = ord(msvcrt.getch())
+            return Key(key_2, True)
+        else:
+            return Key(key)
+
+
 pressed_key = None  # a list of pressed keys for this frame, so that different keys can be checked in the same frame
 
 
 def get_pressed():
     """
-    Gets the currently pressed key
+    Gets the currently pressed key and assigns it to a variable for later reference
     :return: None
     """
     global pressed_key
     if pressed_key is None:  # if there is no key already being handled
-        if msvcrt.kbhit():  # if the key has been hit
-            key = ord(msvcrt.getch())
-            if key == 224 or key == 0:  # 224 always comes before a special key, 0 appears to come before an F key
-                key_2 = ord(msvcrt.getch())
-                pressed_key = Key(key_2, True)
-            else:
-                pressed_key = Key(key)
+        pressed_key = pressed()
+
+
 
 
 def key_down(key):
@@ -93,6 +105,37 @@ def wait_for_keypress(sleep_time=0.01):
     """
     while not msvcrt.kbhit():
         time.sleep(sleep_time)
+
+
+class ThreadedKeyListener(threading.Thread):
+    """
+    A threaded Key Listener which executes a function every time a specific key is pressed
+    """
+    def __init__(self, stop_event, key_handler=lambda k: None, sleep_time=0.1, *args, **kwargs):
+        self.stop_event = stop_event  # threading.Event
+        self.key_handler = key_handler  # Executed every time a key is hit with the Key object as it's parameter
+        self.sleep_time = sleep_time
+
+        super(ThreadedKeyListener, self).__init__(*args, **kwargs)
+
+    @property
+    def do_run(self):
+        return not self.stop_event.is_set()  # if it's set, then we have to stop
+
+    def run(self):
+        """
+        Listen for keys and add them to the Queue when they're pressed.
+
+        Will run until key is pressed, before determining whether to continue execution
+        """
+        print("running...")
+
+        while self.do_run:
+            wait_for_keypress(self.sleep_time)
+            k = pressed()
+
+            if self.do_run:
+                self.key_handler(k)  # execute the key handler
 
 
 if __name__ == "__main__":
