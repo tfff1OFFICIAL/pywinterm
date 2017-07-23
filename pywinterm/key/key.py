@@ -6,9 +6,10 @@ from pywinterm.key import Key
 sKey = lambda x: Key(x, True)  # shorthand for a special key
 
 # General Keys
-ESCAPE  = Key(27)
-RETURN  = Key(13)
-TAB     = Key(9)
+ESCAPE    = Key(27)
+RETURN    = Key(13)
+TAB       = Key(9)
+BACKSPACE = Key(8)
 
 # Arrow Keys
 UP      = sKey(72)
