@@ -1,7 +1,7 @@
 """
 Screen utilities
 """
-from pywinterm.display import util, style, style
+from pywinterm.display import util, style, style, widget
 from pywinterm.display.exceptions import *
 from pywinterm.display.style import foreground, background
 import platform
@@ -130,20 +130,20 @@ class RootDisplay(Display):
             for l in range(len(display.text)):  # render the text
                 # decide on how many spaces to leave before the text (to handle alignment)
                 indent = 0
-                if isinstance(display.text[l], Label):
+                if issubclass(type(display.text[l]), widget.Widget):
                     # if display.text[l].text_alignment == 0:
                     # left alignment
-                    if display.text[l].text_alignment == 1:
+                    if display.text[l].alignment == 1:
                         # centre alignment
                         indent = (display.width // 2) - (len(display.text[l]) // 2)
-                    elif display.text[l].text_alignment == 2:
+                    elif display.text[l].alignment == 2:
                         # right alignment
                         indent = display.width - len(display.text[l])
 
                 for i in range(len(display.text[l])):
                     # print("screen[{}][{}] = {}".format(l + y_total, i + x_total + indent, display.text[l][i]))
                     try:
-                        screen[l + y_total][i + x_total + indent] = display.text[l][i]
+                        screen[l + y_total][i + x_total + indent] = str(display.text[l][i])
                     except IndexError:
                         raise DisplayError("Either the Label is too long, or the Display is too large.")
 
@@ -184,15 +184,15 @@ if __name__ == "__main__":
     root.add_display(menu)
 
     # print things to the displays
-    menu.printline("hi there!")
-    l = Label("how are you?", fore_colour=style.foreground.RED)
+    menu.print("hi there!")
+    l = widget.Label("how are you?")
     #for x in l:
     #    print(x)
-    menu.printline(l)
+    menu.print(l)
 
-    root.printline(Label("Left", text_alignment=0))
-    root.printline(Label("Centre", text_alignment=1))
-    root.printline(Label("Right", text_alignment=2))
+    root.print(widget.Label("Left", alignment=0))
+    root.print(widget.Label("Centre", alignment=1))
+    root.print(widget.Label("Right", alignment=2))
 
     x = 0
 
@@ -211,7 +211,7 @@ if __name__ == "__main__":
         else:
             x = 0
 
-        l.fore_colour = cols[x]
+        l.style.fore = cols[x]
 
         root.render()
 
