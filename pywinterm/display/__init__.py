@@ -7,6 +7,19 @@ from pywinterm.display.style import foreground, background
 import platform
 
 
+def Label(text, fore_colour=None, back_colour=None, text_alignment=0):
+    """
+    Generator for a Label for back compatibility
+    :return: Label
+    """
+    s = style.Style(fore=fore_colour, back=back_colour)
+    return widget.Label(
+        text,
+        s,
+        alignment=text_alignment
+    )
+
+
 class Display:
     """
     Represents a Window object. Stuff can be drawn on to the window using it's functions.
