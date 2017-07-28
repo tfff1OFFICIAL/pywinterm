@@ -294,6 +294,9 @@ class TextInput(Widget):
             else:
                 return self.text + '_' * (self.length - len(self.text))
 
+    def __len__(self):
+        return self.length
+
     def __getitem__(self, item):
         if item == 0:
             return self.style.start_sequence + self._unstyled_text[0]
@@ -308,6 +311,23 @@ class TextInput(Widget):
     def __repr__(self):
         with self.text_lock:
             return '<TextInput length: %r, text: %r>' % (self.length, self.text)
+
+    def __iter__(self):
+        self.index = 0
+        return self
+
+    def __next__(self):
+        if self.index >= len(self._unstyled_text):
+            raise StopIteration
+        elif self.index == 0:
+            result = self.style.start_sequence + self._unstyled_text[0]
+        elif self.index == len(self) - 1:
+            result = self._unstyled_text[self.index] + self.style.end_sequence
+        else:
+            result = self._unstyled_text[self.index]
+
+        self.index += 1
+        return result
 
 
 class Label(Widget):
