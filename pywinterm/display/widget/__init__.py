@@ -29,13 +29,17 @@ class Widget:
         return '<Widget alignment: %r>' % self.alignment
 
     def __getitem__(self, item):
+        raise NotImplementedError()
+        '''
+        Implement your own, something like this:
+        
         if item == 0:
-            return self.style.start_sequence + str(self)[0]
+            return self.style.start_sequence + self.text[0]
         elif item == len(self) - 1:
-            return str(self)[item] + self.style.end_sequence
+            return self.text[item] + self.style.end_sequence
         else:
-            return str(self)[item]
-
+            return self.text)[item]
+        '''
     def __iter__(self):
         self.index = 0
         return self
@@ -282,12 +286,24 @@ class TextInput(Widget):
         self.unfocus()
         self.unfocus_handler(k)
 
-    def __str__(self):
+    @property
+    def _unstyled_text(self):
         with self.text_lock:
             if len(self.text) >= self.length:
-                return self.style.start_sequence + self.text[-self.length:] + self.style.end_sequence
+                return self.text[-self.length:]
             else:
-                return self.style.start_sequence + self.text + '_' * (self.length - len(self.text)) + self.style.end_sequence
+                return self.text + '_' * (self.length - len(self.text))
+
+    def __getitem__(self, item):
+        if item == 0:
+            return self.style.start_sequence + self._unstyled_text[0]
+        elif item == len(self) - 1:
+            return self._unstyled_text[item] + self.style.end_sequence
+        else:
+            return self._unstyled_text[item]
+
+    def __str__(self):
+        return self.style.start_sequence + self._unstyled_text + self.style.end_sequence
 
     def __repr__(self):
         with self.text_lock:
@@ -389,5 +405,6 @@ if __name__ == '__main__':
         #clear_window()
 
         print(tin)
+        print(tin[2:5])
 
         time.sleep(1)
