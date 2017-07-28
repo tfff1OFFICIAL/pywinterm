@@ -146,10 +146,10 @@ class RootDisplay(Display):
                 if issubclass(type(display.text[l]), widget.Widget):
                     # if display.text[l].text_alignment == 0:
                     # left alignment
-                    if display.text[l].alignment == 1:
+                    if display.text[l].alignment == style.alignment.CENTRE:
                         # centre alignment
                         indent = (display.width // 2) - (len(display.text[l]) // 2)
-                    elif display.text[l].alignment == 2:
+                    elif display.text[l].alignment == style.alignment.RIGHT:
                         # right alignment
                         indent = display.width - len(display.text[l])
 

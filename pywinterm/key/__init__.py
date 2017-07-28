@@ -128,8 +128,6 @@ class ThreadedKeyListener(threading.Thread):
 
         Will run until key is pressed, before determining whether to continue execution
         """
-        print("running...")
-
         while self.do_run:
             wait_for_keypress(self.sleep_time)
             k = pressed()
