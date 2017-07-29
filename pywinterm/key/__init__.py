@@ -28,7 +28,7 @@ class Key:
                 return other == self.id  # see if they represent the same character
 
     def __str__(self):
-        return '{}{}'.format(chr(self.id), "(special)" if self.is_special_key else "")
+        return chr(self.id)
 
 
 def kbfunc():
@@ -76,8 +76,6 @@ def get_pressed():
         pressed_key = pressed()
 
 
-
-
 def key_down(key):
     """
     Checks if key is currently pressed
@@ -86,6 +84,7 @@ def key_down(key):
     """
     get_pressed()
     global pressed_key
+
     return key == pressed_key
 
 
