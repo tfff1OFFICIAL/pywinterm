@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
       name='pywinterm',
-      version='0.3.0',
+      version='0.4.0',
       description='A tiny library for doing some basic terminal control and keyhandling in Python',
       url='https://github.com/tfff1OFFICIAL/pywinterm',
       author='tfff1OFFICIAL',
