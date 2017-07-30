@@ -1,7 +1,7 @@
 """
 Screen utilities
 """
-from pywinterm.display import util, style, style, widget
+from pywinterm.display import util, style, widget
 from pywinterm.display.exceptions import *
 from pywinterm.display.style import foreground, background
 import platform
