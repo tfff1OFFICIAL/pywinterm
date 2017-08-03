@@ -110,10 +110,11 @@ class ThreadedKeyListener(threading.Thread):
     """
     A threaded Key Listener which executes a function every time a specific key is pressed
     """
-    def __init__(self, stop_event, key_handler=lambda k: None, sleep_time=0.1, *args, **kwargs):
+    def __init__(self, stop_event, key_handler=lambda k: None, sleep_time=0.1, rerender_event=threading.Event(), *args, **kwargs):
         self.stop_event = stop_event  # threading.Event
         self.key_handler = key_handler  # Executed every time a key is hit with the Key object as it's parameter
         self.sleep_time = sleep_time
+        self.rerender_event = rerender_event
 
         super(ThreadedKeyListener, self).__init__(*args, **kwargs)
 
@@ -132,7 +133,7 @@ class ThreadedKeyListener(threading.Thread):
             k = pressed()
 
             if self.do_run:
-                self.key_handler(k)  # execute the key handler
+                self.key_handler(k, self.rerender_event)  # execute the key handler
 
 
 if __name__ == "__main__":

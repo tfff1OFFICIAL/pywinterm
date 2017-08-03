@@ -230,28 +230,32 @@ class TextInput(Widget):
 
         super(self.__class__, self).__init__(*args, **kwargs)
 
-    def keypress_handler(self, k):
+    def keypress_handler(self, k, rerender_event):
         """
         Handles every keypress for the ThreadedKeyListener
         :param k: Key
+        :param rerender_event: threading.Event
         :return: None
         """
         if k in self.valid_chars:
             with self.text_lock:
                 self.text += str(k)
+            rerender_event.set()
         elif k in self.unfocus_keys:
             self._unfocus(k)  # call the internal unfocus which was designed for this purpose
         elif k == self.backspace_key:
             with self.text_lock:
                 self.text = self.text[:-1]
+            rerender_event.set()
 
     @property
     def is_focused(self):
         return not self._keylistener_stop_event.is_set()
 
-    def focus(self, sleep_time=0.1, blocking=False):
+    def focus(self, sleep_time=0.1, blocking=False, rerender_event=threading.Event()):
         """
         Hijack keylistening until one of the unfocus keys is hit
+        :param rerender_event: threading.Event, set on update time
         :return: None
         """
         if not self.is_focused:
@@ -260,7 +264,8 @@ class TextInput(Widget):
             keylistener = key.ThreadedKeyListener(
                 self._keylistener_stop_event,
                 self.keypress_handler,
-                sleep_time
+                sleep_time,
+                rerender_event=rerender_event
             )
 
             keylistener.start()
