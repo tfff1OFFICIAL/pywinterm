@@ -23,18 +23,16 @@ root = RootDisplay("key counter")
 def run():
   root.print("x pressed: 0 times so far")
   
-  key.clear_keypresses()
-  
   counter = 0
   
   while True:
     root.render()
+    key.clear_keypresses()
     key.wait_for_keypress()
     if key.key_down("x"):
       root.clear()
       counter += 1
       root.print("x pressed: {} times so far".format(counter))
-    key.clear_keypresses()
 
 if __name__ == "__main__":
   run()
