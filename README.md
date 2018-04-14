@@ -17,7 +17,7 @@ A basic application to count the number of times 'x' was pressed could be made l
 import time
 from pywinterm import key
 from pywinterm.display import RootDisplay
-from pywinter.display.widgets import Label
+from pywinterm.display.widgets import Label
 
 root = RootDisplay("key counter")
 
@@ -38,3 +38,4 @@ def run():
 
 if __name__ == "__main__":
   run()
+```
