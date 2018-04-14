@@ -34,6 +34,7 @@ def run():
       root.clear()
       counter += 1
       root.print("x pressed: {} times so far".format(counter))
+    key.clear_keypresses()
 
 if __name__ == "__main__":
   run()
